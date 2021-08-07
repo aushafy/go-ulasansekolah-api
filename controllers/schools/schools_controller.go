@@ -3,27 +3,20 @@ package schools
 import (
 	"net/http"
 
+	"github.com/aushafy/go-ulasansekolah-api/configs"
 	"github.com/aushafy/go-ulasansekolah-api/domain/schools"
 	"github.com/gin-gonic/gin"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
 )
 
 func CreateSchool(c *gin.Context) {
 	var input schools.School
 
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 
-	database, err := gorm.Open(sqlite.Open("ulasansekolah.db"))
-
-	if err != nil {
-		panic("Failed to connect to database!")
-	}
-
-	database.AutoMigrate(&schools.School{})
+	configs.ConnectionDB()
 
 	data := schools.School{
 		Id:              input.Id,
@@ -41,7 +34,7 @@ func CreateSchool(c *gin.Context) {
 		Latitude:        input.Latitude,
 		Longitude:       input.Longitude,
 	}
-	database.Create(&data)
+	configs.DB.Create(&data)
 
 	c.JSON(http.StatusOK, gin.H{"message": "inserrt data success"})
 }
@@ -51,12 +44,9 @@ func GetSchool(c *gin.Context) {
 
 	param := c.Param("npsn")
 
-	database, err := gorm.Open(sqlite.Open("ulasansekolah.db"))
-	if err != nil {
-		panic("Failed to connect to database!")
-	}
+	configs.ConnectionDB()
 
-	database.Raw("SELECT * FROM schools WHERE npsn = ?", param).Scan(&data)
+	configs.DB.Raw("SELECT * FROM schools WHERE npsn = ?", param).Scan(&data)
 
 	if data.Npsn == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Not Found!"})
@@ -69,13 +59,9 @@ func GetSchool(c *gin.Context) {
 func SearchSchool(c *gin.Context) {
 	var data []schools.School
 
-	database, err := gorm.Open(sqlite.Open("ulasansekolah.db"))
+	configs.ConnectionDB()
 
-	if err != nil {
-		panic("Failed to connect to database!")
-	}
-
-	database.Find(&data)
+	configs.DB.Find(&data)
 
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": data})
 }
@@ -83,13 +69,11 @@ func SearchSchool(c *gin.Context) {
 func DeleteSchool(c *gin.Context) {
 	param := c.Param("npsn")
 
-	database, err := gorm.Open(sqlite.Open("ulasansekolah.db"))
-	if err != nil {
-		panic("Failed to connect to database!")
-	}
+	configs.ConnectionDB()
 
 	query := "DELETE FROM schools WHERE npsn='" + param + "'"
-	database.Exec(query)
+
+	configs.DB.Exec(query)
 
 	c.JSON(http.StatusOK, gin.H{"message": "delete success"})
 }
