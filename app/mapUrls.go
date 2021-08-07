@@ -15,7 +15,7 @@ func mapUrls() {
 			school.GET("search/:npsn", schools.GetSchool)
 			school.GET("search", schools.SearchSchool)
 			school.POST("", schools.CreateSchool)
-			school.DELETE(":npsn", schools.DeleteSchool)
+			school.DELETE("delete/:npsn", schools.DeleteSchool)
 		}
 	}
 }

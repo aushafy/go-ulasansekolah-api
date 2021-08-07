@@ -2,8 +2,9 @@
 
 ### RESTful API Reference Endpoints
 ```
-http://localhost:8080/ping
-http://localhost:8080/api/v1/schools/:school_id
-http://localhost:8080/api/v1/schools/search
-http://localhost:8080/api/v1/schools
+GET     : http://localhost:8080/ping
+GET     : http://localhost:8080/api/v1/schools/search/:npsn
+GET     : http://localhost:8080/api/v1/schools/search
+POST    : http://localhost:8080/api/v1/schools
+DELETE  : http://localhost:8080/api/v1/schools/delete/:npsn
 ```
