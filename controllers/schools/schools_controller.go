@@ -47,7 +47,23 @@ func CreateSchool(c *gin.Context) {
 }
 
 func GetSchool(c *gin.Context) {
-	c.String(http.StatusNotImplemented, "Implement me!")
+	var data schools.School
+
+	param := c.Param("npsn")
+
+	database, err := gorm.Open(sqlite.Open("ulasansekolah.db"))
+	if err != nil {
+		panic("Failed to connect to database!")
+	}
+
+	database.Raw("SELECT * FROM schools WHERE npsn = ?", param).Scan(&data)
+
+	if data.Npsn == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Not Found!"})
+
+	} else {
+		c.JSON(http.StatusOK, gin.H{"data": data})
+	}
 }
 
 func SearchSchool(c *gin.Context) {
@@ -62,4 +78,18 @@ func SearchSchool(c *gin.Context) {
 	database.Find(&data)
 
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": data})
+}
+
+func DeleteSchool(c *gin.Context) {
+	param := c.Param("npsn")
+
+	database, err := gorm.Open(sqlite.Open("ulasansekolah.db"))
+	if err != nil {
+		panic("Failed to connect to database!")
+	}
+
+	query := "DELETE FROM schools WHERE npsn='" + param + "'"
+	database.Exec(query)
+
+	c.JSON(http.StatusOK, gin.H{"message": "delete success"})
 }

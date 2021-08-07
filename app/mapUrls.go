@@ -12,9 +12,10 @@ func mapUrls() {
 	{
 		school := v1.Group("/schools")
 		{
-			school.GET(":school_id", schools.GetSchool)
+			school.GET("search/:npsn", schools.GetSchool)
 			school.GET("search", schools.SearchSchool)
 			school.POST("", schools.CreateSchool)
+			school.DELETE(":npsn", schools.DeleteSchool)
 		}
 	}
 }
