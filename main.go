@@ -1,8 +1,6 @@
 package main
 
-import (
-	"github.com/aushafy/go-ulasansekolah-api/app"
-)
+import "github.com/aushafy/go-ulasansekolah-api/app"
 
 func main() {
 	app.StartApplication()
